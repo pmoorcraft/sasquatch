@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<componentPackages>
+	<component id="SasFile" class="cc.sasquatch.sas.SasFile" />
+	<component id="SasColumn" class="cc.sasquatch.sas.SasColumn" />
+	<component id="BinaryReader" class="cc.sasquatch.io.BinaryReader" />
+</componentPackages>
