@@ -1,4 +1,4 @@
-#summary Reading the Binary file.
+#summary This example shows how to read the binary file and parse the Sas File.
 
 = Example =
 
