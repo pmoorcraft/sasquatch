@@ -1,6 +1,6 @@
 #summary Using the Library
 
-= Introduction =
+= Using the Library =
 
 Once you have read a file into a ByteArray you just need to pass it to the SasFile object.
 
