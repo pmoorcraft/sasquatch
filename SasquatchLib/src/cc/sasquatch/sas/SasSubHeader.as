@@ -10,6 +10,8 @@ package cc.sasquatch.sas {
 		public static const COLATTR:uint = 0xFFFFFFFC;
 		public static const COLNAME:uint = 0xFFFFFFFF;
 		public static const COLLABS:uint = 0xFFFFFBFE;
+		public static const SIGNATURE:uint = 0xFFFFFC00;
+		public static const UNKNOWN_B:uint = 0xFFFFFFFE;
 		
 		public function SasSubHeader(rawData:ByteArray, sigData:ByteArray) {
 			rawData.endian = Endian.LITTLE_ENDIAN;
