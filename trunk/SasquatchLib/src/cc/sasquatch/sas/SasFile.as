@@ -2,6 +2,8 @@ package cc.sasquatch.sas {
 	//import com.demonsters.debugger.MonsterDebugger;
 	import cc.sasquatch.io.BinaryReader;
 	
+	import com.demonsters.debugger.MonsterDebugger;
+	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
@@ -95,6 +97,7 @@ package cc.sasquatch.sas {
 			var colText:SasSubHeader;
 			var colName:SasSubHeader;
 			var colAttrs:SasSubHeader;
+			var colFormats:SasSubHeader;
 			var colLabels:ArrayList = new ArrayList();
 			
 			columns = new ArrayCollection();
@@ -178,7 +181,14 @@ package cc.sasquatch.sas {
 								case SasSubHeader.COLLABS:
 									colLabels.addItem( subhead );
 									break;
+								case SasSubHeader.SIGNATURE:
+									//UNKNOWN USECASE
+									break;
+								case SasSubHeader.UNKNOWN_B:
+									colFormats= subhead;
+									break;
 								default:
+									MonsterDebugger.trace(this, "Unknown SubHeader: " + subhead.signature);
 									break;
 							} 
 						}
@@ -186,14 +196,18 @@ package cc.sasquatch.sas {
 						//MonsterDebugger.trace(this, "Column Count: " + col_count);
 						for (var i:int = 0; i < col_count; i++) {
 							var base:int = 12 + i * 8;
+							var off:int = 0;
+							var len:int = 0;
+							
 							var column:SasColumn = new SasColumn();
+							var t:BinaryReader = new BinaryReader(colText.bytes);
 							
 							if (colName.bytes.length > 0) {
 								var r:BinaryReader = new BinaryReader(colName.bytes);
-								var off:int = r.readShortAt(base + 2) + 4;
-								var len:int = r.readShortAt(base + 4);
 								
-								var t:BinaryReader = new BinaryReader(colText.bytes);
+								off = r.readShortAt(base + 2) + 4;
+								len = r.readShortAt(base + 4);
+								
 								column.name = t.readStringAt(off, len);
 							} else {
 								column.name = "COL" + i;
@@ -204,17 +218,30 @@ package cc.sasquatch.sas {
 							if ( colLabels.length > 0 ) { 
 								base = 42;
 								var l:BinaryReader = new BinaryReader(colLabels.getItemAt(i).bytes);
-								var off:int = l.readShortAt(base) + 4;
-								var len:int = l.readShortAt(base + 2);
+								off = l.readShortAt(base) + 4;
+								len = l.readShortAt(base + 2);
 								
 								if (len > 0) {
-									var c:BinaryReader = new BinaryReader(colText.bytes);
-									column.label = c.readStringAt(off, len);
+									column.label = t.readStringAt(off, len);
 								} else {
 									column.label = null;
 								}
+								
+								column.fsize = l.readShortAt(12);
+								//Finding Format Values inside Label SubHeader
+								off =  l.readShortAt(36) + 4;
+								len =  l.readShortAt(38);
+								
+								if (len > 0) {
+									column.format = t.readStringAt(off, len);
+									MonsterDebugger.trace(this, column.name + " format: " + column.format + " found at: " + off +", "+ len);
+								} else {
+									column.format = null;
+								}
+								
 							} else {
 								column.label = null;
+								column.format = null;
 							}
 							
 							// Read column offset, width, type (required)
