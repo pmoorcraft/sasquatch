@@ -1,12 +1,15 @@
 package cc.sasquatch.sas
 {
+	import mx.core.ClassFactory;
+	
 	import spark.components.gridClasses.GridColumn;
 
 	public class SasColumn extends GridColumn
 	{
 		public function SasColumn(columnName:String=null){
 			super(columnName);
-			this.minWidth = 120;
+			this.minWidth = 80;
+			this.itemRenderer = new ClassFactory( SasGridItemRenderer );
 		}
 		
 		public var index:int;

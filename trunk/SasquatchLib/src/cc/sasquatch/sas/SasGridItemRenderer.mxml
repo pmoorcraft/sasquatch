@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:DefaultGridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"  >
+	
+	<fx:Script>
+		<![CDATA[
+			import cc.sasquatch.sas.SasColumn;
+			
+			import mx.formatters.DateFormatter;
+			
+			import spark.skins.spark.DefaultGridItemRenderer;
+			
+			public static const MONTHS_PER_YEAR:int=12;
+			public static const DAYS_PER_WEEK:int=7;
+			public static const HOURS_PER_DAY:int=24;
+			public static const MINUTES_PER_HOUR:int=60;
+			public static const SECONDS_PER_MINUTE:int=60;
+			
+			public static const MILLIS_PER_SECOND:int=1000;
+			public static const MILLIS_PER_MINUTE:int=SECONDS_PER_MINUTE * MILLIS_PER_SECOND;
+			public static const MILLIS_PER_HOUR:int=MINUTES_PER_HOUR * MILLIS_PER_MINUTE;
+			public static const MILLIS_PER_DAY:int=HOURS_PER_DAY * MILLIS_PER_HOUR;
+			
+			
+			override public function prepare( hasBeenRecycled:Boolean ):void {
+				super.prepare(hasBeenRecycled);
+				if ( this.column is SasColumn) {
+					var sc:SasColumn = column as SasColumn;
+					switch ( sc.format ) {
+						case "DATE9.": 
+							var val:Number = new Number(data[column.dataField]) * MILLIS_PER_DAY;
+							var diff:Number = new Date(1960,0,1).getTime();
+							var dt:Date = new Date();
+							dt.setTime(val + diff);
+							
+							var df:DateFormatter = new DateFormatter();
+							df.formatString = 'DD-MMM-YYYY';
+							
+							label = df.format( dt );
+							break;
+						case "TIME8.":
+							var val:Number = new Number(data[column.dataField]) * MILLIS_PER_SECOND;
+							var dt:Date = new Date();
+							dt.setTime(val);
+							
+							var df:DateFormatter = new DateFormatter();
+							df.formatString = 'L:NN A';
+							label = df.format(dt);
+							break;
+						default:
+							break;
+					}
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+</s:DefaultGridItemRenderer>
