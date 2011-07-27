@@ -2,5 +2,6 @@
 <componentPackages>
 	<component id="SasFile" class="cc.sasquatch.sas.SasFile" />
 	<component id="SasColumn" class="cc.sasquatch.sas.SasColumn" />
+	<component id="SasGridItemRenderer" class="cc.sasquatch.sas.SasGridItemRenderer" />
 	<component id="BinaryReader" class="cc.sasquatch.io.BinaryReader" />
 </componentPackages>
